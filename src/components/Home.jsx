@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import langConfig from "../config/langConfig.json";
+import GoogleTranslate from "./GoogleTranslate";
 
 
 const Home = () => {
@@ -129,10 +130,10 @@ const Home = () => {
         },
         body: JSON.stringify({ text, target_lang: targetLanguage }),
       });
-      const translatedText = await response.text();
-
+      //const translatedText = await response.text();
+      console.log("text",text)
       // Show popup after translation
-      setPopupContent(translatedText); // Set the content for the popup
+      setPopupContent(text); // Set the content for the popup
       setIsPopupVisible(true); // Show the popup
     } catch (error) {
       console.error("Error translating text:", error);
@@ -150,10 +151,14 @@ const Home = () => {
         },
         body: JSON.stringify({ text }),
       });
+      console.log("text to summa ");
+      console.log(text);
+      console.log("-------------");
+      
       const res = await response.text();
       await translateParagraph(
         res,
-        langRef.current.slice(0, 2)
+        'en'
       );
     } catch (error) {
       console.error("Error summarizing text:", error);
@@ -362,7 +367,8 @@ const Home = () => {
       </form>
 
       <div id="content" className="mt-8 w-full">
-        {content && <div dangerouslySetInnerHTML={{ __html: content }} />}
+
+        {content &&  <div><GoogleTranslate /><div dangerouslySetInnerHTML={{ __html: content }} /></div>}
       </div>
 
       {/* Popup for displaying translations or summaries */}

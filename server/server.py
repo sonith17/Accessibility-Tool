@@ -61,11 +61,7 @@ def process_image():
 
         image_url = data['image']
 
-        # Fetch the image from the URL
-        response = requests.get(image_url)
-        response.raise_for_status()
-
-        description = generate_description(response)
+        description = generate_description(image_url)
 
         return jsonify({"description": description})
 
