@@ -9,7 +9,7 @@ from transformers import pipeline
 
 app = Flask(__name__)
 
-CORS(app, methods=['GET', 'POST', 'OPTIONS'], allow_headers=['Content-Type'], resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, methods=['GET', 'POST', 'OPTIONS'], allow_headers=['Content-Type'], resources={r"/*": {"origins": "*"}})
 
 translator = Translator()  # Initialize the Google Translator
 
