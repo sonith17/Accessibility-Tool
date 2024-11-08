@@ -2,8 +2,6 @@ beautifulsoup4==4.10.0
 Flask==3.0.3
 Flask_Cors==5.0.0
 googletrans==4.0.0rc1
-huggingface_hub==0.26.1
 Requests==2.32.3
-tensorflow==2.15.0
 transformers==4.45.2
-gunicorn==20.1.0
+gunicorn==23.0.0

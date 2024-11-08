@@ -1,5 +1,4 @@
 import requests
-from huggingface_hub import InferenceClient
 from flask import jsonify
 
 # Hugging Face Inference API URL for BLIP Image Captioning

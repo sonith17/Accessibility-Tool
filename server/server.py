@@ -5,16 +5,16 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from models.image2text import generate_description
 from googletrans import Translator
-from transformers import pipeline
 
 app = Flask(__name__)
 
 CORS(app, methods=['GET', 'POST', 'OPTIONS'], allow_headers=['Content-Type'], resources={r"/*": {"origins": "*"}})
 
 translator = Translator()  # Initialize the Google Translator
+HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+HUGGINGFACE_API_KEY = "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"  # Replace with your API key
 
 # Initialize the summarizer using the BART model
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
 # Function to fetch and return the HTML from a given URL
 def fetch_and_render_url(url):
@@ -91,20 +91,29 @@ def summarize_text():
 
         text = data['text']
 
-        # Function to split large text into smaller chunks if needed
-        def chunk_text(text, chunk_size=400):
-            return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+        headers = {
+        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
+        }
+        payload = {"inputs":text}
+        print(payload)
+        api_response = requests.post(
+            HUGGINGFACE_API_URL,
+            headers=headers,
+            json=payload
+        )
 
-        # Summarize each chunk and combine the summaries
-        text_chunks = chunk_text(text)
-        summaries = [summarizer(chunk, max_length=50, min_length=20, do_sample=False)[0]['summary_text'] for chunk in text_chunks]
-        final_summary = ' '.join(summaries)
-        print(text,"output",final_summary)
-        return  Response(final_summary, content_type='text/plain')
+        # Check if the API response is successful
+        if api_response.status_code == 200:
+            final_summary = api_response.json()
+            print(text,"output",final_summary)
+            return  Response(final_summary[0]['summary_text'], content_type='text/plain')
+        else:
+            print(f"Error from API: {api_response.status_code}, {api_response.text}")
+            return jsonify({"error": f"Error from API: {api_response.status_code}, {api_response.text}"}), 500
 
     except Exception as e:
-        print(text,"sum err")
+        print(text,"sum err",str(e))
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=10000,debug=True)
+    app.run(debug=True)
