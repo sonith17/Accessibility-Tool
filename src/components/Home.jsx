@@ -101,7 +101,7 @@ const Home = () => {
 
   const fetchContent = async (url) => {
     try {
-      const response = await fetch("http://localhost:5000/", {
+      const response = await fetch("https://accessibility-tool.vercel.app/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,7 +118,7 @@ const Home = () => {
   // Function to send the image source to the backend for description
   const getImageDescription = async (imageUrl) => {
     try {
-      const response = await fetch("http://localhost:5000/process-image", {
+      const response = await fetch("https://accessibility-tool.vercel.app/process-image", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +135,7 @@ const Home = () => {
 
   const translateParagraph = async (text, targetLanguage) => {
     try {
-      const response = await fetch("http://localhost:5000/translate", {
+      const response = await fetch("https://accessibility-tool.vercel.app/translate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -156,7 +156,7 @@ const Home = () => {
   // New function to get summary
   const getSummary = async (text) => {
     try {
-      const response = await fetch("http://localhost:5000/summarize", {
+      const response = await fetch("https://accessibility-tool.vercel.app/summarize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
