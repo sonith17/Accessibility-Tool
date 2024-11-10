@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response , url_for
 from flask_cors import CORS
 import requests
 from urllib.parse import urljoin
@@ -90,7 +90,10 @@ def summarize_text():
             return jsonify({"error": "No text provided."}), 400
 
         text = data['text']
-
+        endpoint1_url = url_for('translate_text', _external=True)
+        data = {"text":text,"target_lang":'en'}
+        response = requests.post(endpoint1_url,json=data)
+        text = response.text
         headers = {
         "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
         }

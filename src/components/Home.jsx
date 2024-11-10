@@ -10,7 +10,19 @@ const Home = () => {
   const [language, setLanguage] = useState("en-US");
   const [popupContent, setPopupContent] = useState(""); // State to manage popup content
   const [isPopupVisible, setIsPopupVisible] = useState(false); // State for popup visibility
+  const [selectedZoom, setSelectedZoom] = useState(1); // Final zoom level
+  const [previewMode, setPreviewMode] = useState(true); // Toggle for preview mode
 
+  const zoomLevels = [1, 1.25, 1.5, 1.75, 2]; // Define zoom levels
+
+  useEffect(() => {
+    setContent("");
+  }, []);
+
+  const handleZoomSelect = (zoom) => {
+    setSelectedZoom(zoom);
+    setPreviewMode(false); // Exit preview mode once user selects zoom
+  };
   const langRef = useRef(language);
   const actionRef = useRef(langConfig[language].actions);
   useEffect(() => {
@@ -19,10 +31,10 @@ const Home = () => {
     actionRef.current = langConfig[language].actions;
   }, [language]);
 
-  const recognition = new (window.SpeechRecognition ||
-    window.webkitSpeechRecognition)();
-  recognition.interimResults = false; // Get only final results
-  recognition.lang = language; // Set language
+  // const recognition = new (window.SpeechRecognition ||
+  //   window.webkitSpeechRecognition)();
+  // recognition.interimResults = false; // Get only final results
+  // recognition.lang = language; // Set language
 
   let inactivityTimer;
 
@@ -33,31 +45,31 @@ const Home = () => {
     }
   };
 
-  const startListening = () => {
-    console.log("Starting recognition in language:", language);
-    recognition.start();
-    resetInactivityTimer();
-  };
+  // const startListening = () => {
+  //   console.log("Starting recognition in language:", language);
+  //   recognition.start();
+  //   resetInactivityTimer();
+  // };
 
-  const stopListening = () => {
-    console.log("Stopping recognition");
-    setIsListening(false);
-    recognition.stop();
-    clearTimeout(inactivityTimer);
-  };
+  // const stopListening = () => {
+  //   console.log("Stopping recognition");
+  //   setIsListening(false);
+  //   recognition.stop();
+  //   clearTimeout(inactivityTimer);
+  // };
 
-  recognition.onresult = (event) => {
-    const command = event.results[0][0].transcript.toLowerCase();
-    console.log("Recognized command:", command);
-    handleCommand(command);
-    resetInactivityTimer();
+  // recognition.onresult = (event) => {
+  //   const command = event.results[0][0].transcript.toLowerCase();
+  //   console.log("Recognized command:", command);
+  //   handleCommand(command);
+  //   resetInactivityTimer();
 
-    // Restart recognition after a short delay
-    setTimeout(() => {
-      console.log("Restarting recognition");
-      recognition.start(); // Restart recognition to keep listening
-    }, 500);
-  };
+  //   // Restart recognition after a short delay
+  //   setTimeout(() => {
+  //     console.log("Restarting recognition");
+  //     recognition.start(); // Restart recognition to keep listening
+  //   }, 500);
+  // };
 
   const handleCommand = (command) => {
     // Get the commands for the current language
@@ -75,13 +87,13 @@ const Home = () => {
     }
   };
 
-  const resetInactivityTimer = () => {
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(() => {
-      console.log("Stopping recognition after 30 seconds of inactivity");
-      stopListening();
-    }, 30000);
-  };
+  // const resetInactivityTimer = () => {
+  //   clearTimeout(inactivityTimer);
+  //   inactivityTimer = setTimeout(() => {
+  //     console.log("Stopping recognition after 30 seconds of inactivity");
+  //     stopListening();
+  //   }, 30000);
+  // };
 
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
@@ -151,9 +163,6 @@ const Home = () => {
         },
         body: JSON.stringify({ text }),
       });
-      console.log("text to summa ");
-      console.log(text);
-      console.log("-------------");
       
       const res = await response.text();
       await translateParagraph(
@@ -310,7 +319,7 @@ const Home = () => {
       <h1 className="text-3xl font-bold mb-4 text-center">
         Accezy
       </h1>
-
+      <GoogleTranslate />
       <form onSubmit={handleSubmit} className="w-full max-w-lg">
         <div className="flex items-center border-b border-teal-500 py-2">
           <input
@@ -329,7 +338,7 @@ const Home = () => {
           </button>
         </div>
         <div className="mt-2 flex items-center justify-center">
-        <button
+        {/* <button
             id="start"
             type="button"
             onClick={startListening}
@@ -344,7 +353,7 @@ const Home = () => {
             className="ml-2 flex-shrink-0 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
           >
             🛑 Stop Listening
-          </button>
+          </button> */}
           </div>
         <div className="flex mt-2 items-center justify-center">
           <select
@@ -366,9 +375,27 @@ const Home = () => {
         </div>
       </form>
 
-      <div id="content" className="mt-8 w-full">
-
-        {content &&  <div><GoogleTranslate /><div dangerouslySetInnerHTML={{ __html: content }} /></div>}
+      <div id="content" className="mt-8 w-full" >
+            
+            {/* {zoomLevels.map((zoom) => (
+            <div
+              key={zoom}
+            >
+              <button className="text-lg font-semibold text-center text-gray-700 border rounded-lg shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow"
+              style={{
+                transform: `scale(${zoom})`,
+                transformOrigin: "center",
+                height: "300px",
+                width:"100%"
+                
+              }}
+              onClick={() => handleZoomSelect(zoom)}
+              >
+                {Math.round(zoom * 100)}% Zoom
+              </button>
+            </div>
+          ))} */}
+        {content &&  <div><div dangerouslySetInnerHTML={{ __html: content }} /></div>}
       </div>
 
       {/* Popup for displaying translations or summaries */}
